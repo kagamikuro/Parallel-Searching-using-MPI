@@ -1,0 +1,73 @@
+Sun Nov 11 09:14:59 GMT 2018
+Starting new job
+Read pattern 5
+Text length = 10000000
+Pattern 5 length = 1000
+Read pattern 7
+Text length = 10000000
+Pattern 7 length = 1000
+Read pattern 1
+Text length = 10000000
+Pattern 1 length = 1000
+Read pattern 2
+Text length = 10000000
+Pattern 2 length = 1000
+Pattern 2 found at position 1000
+# comparisons for finding pattern 2 = 501500
+Read pattern 4
+Text length = 10000000
+Pattern 4 length = 1000
+Read pattern 6
+Text length = 10000000
+Pattern 6 length = 1000
+Pattern 4 found at position 3000
+# comparisons for finding pattern 4 = 1502500
+Pattern 6 found at position 2000
+# comparisons for finding pattern 6 = 1002000
+Read pattern 8
+Text length = 10000000
+Pattern 8 length = 1000
+Pattern 8 found at position 0
+# comparisons for finding pattern 8 = 1000
+Read pattern 3
+Text length = 10000000
+Pattern 3 length = 1000
+Pattern 7 found at position 9999000
+# comparisons for finding pattern 7 = 9995504500
+Pattern 5 found at position 9998000
+# comparisons for finding pattern 5 = 9995004000
+Pattern 3 found at position 9997000
+# comparisons for finding pattern 3 = 9994503500
+Pattern 1 found at position 9996000
+# comparisons for finding pattern 1 = 9994003000
+process 0 elapsed wall clock time = 32
+process 0 elapsed CPU time = 32.340000
+
+process 4 elapsed wall clock time = 32
+process 4 elapsed CPU time = 32.330000
+
+process 2 elapsed wall clock time = 32
+process 2 elapsed CPU time = 32.330000
+
+process 3 elapsed wall clock time = 32
+process 3 elapsed CPU time = 1.220000
+
+process 5 elapsed wall clock time = 32
+process 5 elapsed CPU time = 1.170000
+
+-------------------------------------------------------
+Primary job  terminated normally, but 1 process returned
+a non-zero exit code.. Per user-direction, the job has been aborted.
+-------------------------------------------------------
+process 6 elapsed wall clock time = 32
+process 6 elapsed CPU time = 32.310000
+
+--------------------------------------------------------------------------
+mpirun detected that one or more processes exited with non-zero status, thus causing
+the job to be terminated. The first process to do so was:
+
+  Process name: [[4245,1],0]
+  Exit code:    40
+--------------------------------------------------------------------------
+Finished job
+Sun Nov 11 09:15:31 GMT 2018
