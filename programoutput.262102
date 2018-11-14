@@ -1,0 +1,17 @@
+Tue Nov 13 13:04:05 GMT 2018
+Starting new job
+Read pattern 1
+Read pattern 1
+slave 1 receive work `V±LM+ from master
+[node034:23949] *** Process received signal ***
+[node034:23950] *** Process received signal ***
+Read pattern 2
+Read pattern 2
+[node034:23951] *** Process received signal ***
+Read pattern 3
+Read pattern 3
+--------------------------------------------------------------------------
+mpirun noticed that process rank 2 with PID 23950 on node node034 exited on signal 11 (Segmentation fault).
+--------------------------------------------------------------------------
+Finished job
+Tue Nov 13 13:04:10 GMT 2018

@@ -17,11 +17,11 @@ void slave();
 
 
 
-char *textData;
-int textLength;
+//char *textData;
+//int textLength;
 
-char *patternData;
-int patternLength;
+//char *patternData;
+//int patternLength;
 
 clock_t c0, c1;
 time_t t0, t1;
@@ -62,6 +62,85 @@ void readFromFile (FILE *f, char **data, int *length)
 	*length = resultLength;
 }
 
+
+char* readTextData(){
+	FILE *f;
+        char fileName[1000];
+	char* textData;
+	int textLength;
+#ifdef DOS
+        sprintf (fileName, "inputs\\text.txt");
+#else
+        sprintf (fileName, "inputs/text.txt");
+#endif
+        f = fopen (fileName, "r");
+        if (f == NULL){
+		printf("no text data found!");
+		//exit(-1);
+
+	}
+                
+        readFromFile (f, &textData, &textLength);
+        fclose (f);
+
+	return textData;	
+}
+
+
+
+char* readPatternData(int testNumber){
+	FILE *f;
+        char fileName[1000];
+	char* patternData;
+	int patternLength;
+	#ifdef DOS
+        sprintf (fileName, "inputs\\pattern%d.txt", testNumber);
+#else
+        sprintf (fileName, "inputs/pattern%d.txt", testNumber);
+#endif
+        f = fopen (fileName, "r");
+        if (f == NULL)
+                printf ("pattern %d no found\n", testNumber);
+        readFromFile (f, &patternData, &patternLength);
+        fclose (f);
+
+        printf ("Read pattern %d\n", testNumber);
+
+        return patternData;	
+}
+
+
+int getArrayLength(char* array){
+	
+}
+
+
+
+int readPatternLength(int testNumber){
+        FILE *f;
+        char fileName[1000];
+	char* patternData;
+	int patternLength;
+        #ifdef DOS
+        sprintf (fileName, "inputs\\pattern%d.txt", testNumber);
+#else
+        sprintf (fileName, "inputs/pattern%d.txt", testNumber);
+#endif
+        f = fopen (fileName, "r");
+        if (f == NULL)
+                return 0;
+        readFromFile (f, &patternData, &patternLength);
+        fclose (f);
+
+        printf ("Read pattern %d\n", testNumber);
+
+        return patternLength;
+}
+
+
+
+
+/*
 int readData (int testNumber)
 {
 	FILE *f;
@@ -92,10 +171,10 @@ int readData (int testNumber)
 	return 1;
 
 }
+*/
 
 
-
-int hostMatch(long *comparisons)
+int hostMatch(long *comparisons,char textData[],int textLength,char patternData[],int patternLength)
 {
 	int i,j,k, lastI;
 	
@@ -125,7 +204,7 @@ int hostMatch(long *comparisons)
 	else
 		return -1;
 }
-void processData(int testNumber)
+void processData(int testNumber,char textData[],int textLength,char patternData[],int patternLength)
 {
 	unsigned int result;
         long comparisons;
@@ -133,7 +212,7 @@ void processData(int testNumber)
 	printf ("Text length = %d\n", textLength);
 	printf ("Pattern %d length = %d\n",testNumber, patternLength);
 	
-	result = hostMatch(&comparisons);
+	result = hostMatch(&comparisons,textData,textLength,patternData,patternLength);
 	if (result == -1)
 		printf ("Pattern not found\n");
 	else
@@ -147,7 +226,7 @@ int main(int argc, char **argv)
 {
 	int testNumber=1;
 	int npes ,myrank;
-		
+	
 	
 	
 	c0 = clock(); t0 = time(NULL);
@@ -169,24 +248,46 @@ int main(int argc, char **argv)
 }
 
 void master(){
-	int ntasks;
-	int rank;
+	int ntasks;;
 	MPI_Status status;
-	int work;
+	int testNumber;
 	MPI_Comm_size(MPI_COMM_WORLD,&ntasks);
-	for(rank=1;rank<ntasks;rank++){
-		work = rank;
-		MPI_Send(&work,1,MPI_INT,rank,0,MPI_COMM_WORLD);
+
+	char* textData;
+
+	textData = readTextData();//read text data
+	int textLength =  strlen(textData);//calculate the length of text
+	MPI_Bcast(&textLength,1,MPI_INT,0,MPI_COMM_WORLD);//send the text length to every slave process
+	MPI_Bcast(textData,10000001,MPI_CHAR,0,MPI_COMM_WORLD);//send the text to every slave process
+
+	char* pattern;
+	int patternLength; 
+	for(testNumber=1;testNumber<ntasks;testNumber++){		
+		pattern = readPatternData(testNumber);
+		//patternLength = strlen(pattern);		
+		//printf("pattern length : %s\n",pattern);	
+		MPI_Send(pattern,1001,MPI_CHAR,testNumber,0,MPI_COMM_WORLD);
 	}
+	
 }
 
 void slave(){
-	int work;
+	char pattern[1000];
+	char textData[10000000];
 	int result;
 	MPI_Status status;
-	MPI_Recv(&work,1,MPI_INT,0,0,MPI_COMM_WORLD,&status);
+	int myrank;
+	int textLength;
+	MPI_Comm_rank(MPI_COMM_WORLD,&myrank);
+	
+	MPI_Bcast(&textLength,1,MPI_INT,0,MPI_COMM_WORLD);//receive the text length from master process
+
+	MPI_Bcast(&textData,10000001,MPI_CHAR,0,MPI_COMM_WORLD);//receive text from master process	
+	//printf("slave %d receive textData [%s] from master\n",myrank,textData);
+
+	MPI_Recv(&pattern,1000,MPI_CHAR,0,0,MPI_COMM_WORLD,&status);//receive pattern from master process
+	int patternLength = strlen(pattern);
+	//printf("slave %d receive work [%s] from master\n",myrank,pattern);
+	processData(myrank,textData,textLength,pattern,1000);	
 }
 
-static int do_work(int work){
-	return work;
-}
